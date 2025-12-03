@@ -7,10 +7,27 @@ import (
 	"strings"
 )
 
+type Lateral int
+
+const (
+	LEFT  Lateral = iota // 0
+	RIGHT                // 1 	// 3
+)
+
+type Direction int
+
+const (
+	NORTH Direction = iota // 0
+	EAST                   // 1
+	SOUTH                  // 2
+	WEST                   // 3
+)
+
 type Rover struct {
 	x         int
 	y         int
-	direction string
+	direction Direction
+	actions   []int
 }
 
 func (r *Rover) Move(dx, dy int) {
@@ -18,8 +35,22 @@ func (r *Rover) Move(dx, dy int) {
 	r.y += dy
 }
 
-func (r *Rover) Rotate(newDirection string) {
-	r.direction = newDirection
+func (r *Rover) Rotate(newDirection Lateral) {
+	if newDirection == RIGHT {
+		r.direction = ((r.direction + 1%4) + 4) % 4
+
+	} else {
+		r.direction = ((r.direction - 1%4) + 4) % 4
+	}
+}
+
+func (r *Rover) Print() {
+	for i := 0; i < r.x; i++ {
+		for j := 0; j < r.y; j++ {
+			fmt.Print("-")
+		}
+		fmt.Println("x")
+	}
 }
 
 func main() {
@@ -41,7 +72,9 @@ func main() {
 		case "m":
 			rover.Move(1, 1)
 		case "r":
-			rover.Rotate("Right")
+			rover.Rotate(RIGHT)
+		case "p":
+			rover.Print()
 		}
 	}
 
